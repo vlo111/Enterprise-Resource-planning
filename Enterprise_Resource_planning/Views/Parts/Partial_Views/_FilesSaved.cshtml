@@ -1,0 +1,63 @@
+﻿@model Enterprise_Resource_planning.Models.CenDek.Tables.File
+@using Enterprise_Resource_planning.Models;
+@{
+    Layout = null;
+}
+@{
+    UnitOfWork _unitOfWork = new UnitOfWork();
+ }
+
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3 class="modal-title">Select File</h3>
+</div>
+<div class="modal-body">
+    @using (Ajax.BeginForm("SaveFile", "Parts", null, new AjaxOptions
+    {
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "SelectedFile",
+    }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.FileID)
+
+            <div class="form-group">
+                <div class="col-md-2">
+                    <label class="control-label">Document Type</label>
+                </div>
+                <div class="col-md-4">
+                    @Html.DropDownListFor(m => m.DocumentTypeID, new SelectList((System.Collections.IEnumerable)(_unitOfWork.DocumentTypeRepository.Get()), "DocumentTypeID", "Name"), htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DocumentTypeID, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <dl class="dl-horizontal">
+                <dt style="text-align:center">
+                    @Html.Display(Model.Name)
+                    @Html.Display(Model.Type)
+                </dt>
+                <dd>
+                    @{string path = ""; if (Model.Type == "jpg" || Model.Type == "png" || Model.Type == "gif") { path = "/Images/WallFiles/filepath/" + Model.Name + "." + Model.Type; }
+                else if (Model.Type == "pdf") { path = "/Images/pdf.png"; }
+                else if (Model.Type == "txt") { path = "/Images/txt.png"; }
+                    }
+                    <img src="@path" alt="" style="height:200px;width:200px" />
+                </dd>
+            </dl>
+
+        </div>
+        <div class="modal-footer">
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Select" class="btn btn-success" />
+                    <button class="btn btn-default" data-dismiss="modal">Back</button>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+

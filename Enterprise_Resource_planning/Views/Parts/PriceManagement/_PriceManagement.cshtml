@@ -1,0 +1,111 @@
+﻿@*@model CenDek.Models.Parts.ListPTable*@
+@{
+                /**/
+
+                Layout = null;
+}
+<article class="col-sm-12">
+
+    <!-- Widget ID (each widget will need unique ID)-->
+    <div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-custombutton="false">
+
+        <header style="border-color: #cccccc !important;border-radius: 5px;">
+            <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+            <h2> Filters </h2>
+
+        </header>
+
+        <!-- widget content -->
+        <div class="widget-header no-padding" style="border-radius: 15px">
+
+            <div id="parent" class="widget widget-header">
+
+                <fieldset style="border: aliceblue">
+                    <div class="row">
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <label class="col-md-5 control-label labPad">Start Date</label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                        <input id="startdate1" name="startdate1" @*data-plugin-masked-input*@ data-input-mask="99/99/9999" oninput="validateStartDate1()" placeholder="__/__/____" class="filterItem form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <label class="col-md-4 control-label labPad">Currency</label>
+                                <span class="custom-dropdown currency_dropdown">
+                                    <select id="Currency" name="Currency" class="fontawesomedollar-select filterItem">
+                                        @foreach (var item in (SelectList)ViewBag.SellCurrencyID)
+                                        {
+                                            <option value="@item.Value">&#xf155;   @item.Text</option>
+                                        }
+                                    </select>
+                                </span>
+                            </div>
+
+                            <div class="col-sm-3">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-default btn_search" name="search" id="filterButton" type="button">
+                                        <i class="fa fa-search"></i> Search
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 2px">
+
+                        <div class="form-group">
+                            <div class="col-sm-3">
+                                <label class="col-md-5 control-label labPad">Finish Date</label>
+                                <div class="col-md-7">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </span>
+                                        <input id="finishdate1" name="finishdate1" @*data-plugin-masked-input*@ data-input-mask="99/99/9999" oninput="validateEndDate1()" placeholder="__/__/____" class="filterItem form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <label class="col-md-4 control-label labPad">Customer</label>
+                                <span class="custom-dropdown">
+                                    <select id="Customer" name="Customer" class="fontawesomecustomer-select filterItem">
+                                        <option selected="selected">&#xf2c0; All</option>
+                                        @foreach (var item in (SelectList)ViewBag.CustomerID)
+                                        {
+                                            <option value="@item.Value">&#xf2c0;   @item.Text</option>
+                                        }
+                                    </select>
+                                </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </fieldset>
+
+            </div>
+        </div>
+        <!-- end widget content -->
+        <div class="widget no-padding" style="border-radius: 10px;">
+
+            <table id="jqgrid"></table>
+            <div id="pjqgrid"></div>
+        </div>
+    </div>
+    <!-- end widget -->
+
+
+</article>
+
+<div id='myModal' class='modal fade in'>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id='myModalContent'></div>
+        </div>
+    </div>
+</div>

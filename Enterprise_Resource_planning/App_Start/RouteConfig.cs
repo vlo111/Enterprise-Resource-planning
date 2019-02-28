@@ -16,7 +16,7 @@ namespace Enterprise_Resource_planning
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Parts", action = "Index", id = UrlParameter.Optional }
             );
         }
     }

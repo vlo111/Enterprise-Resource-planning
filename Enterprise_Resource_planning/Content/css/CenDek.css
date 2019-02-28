@@ -1,0 +1,92 @@
+#logo-group>span {
+    display: inline-block;
+    height: 39px;
+    float: left;
+    margin-top: 8px;
+}
+
+.dataTables_filter{
+    float: left;
+}
+
+div.dataTables_filter label {
+    float: left;
+}
+
+div.dataTables_wrapper div.dataTables_filter input {
+    min-width: 200px;
+}
+
+/* BEGIN CUSTOMER CONTACT CARDS */
+
+.comments {
+    height: 200px !important;
+}
+
+div.card {
+    width: 375px;
+    transition: 0.3s;
+    padding: 2px 16px;
+    border-radius: 5px;
+    position: relative;
+    margin-bottom: 10px;
+    vertical-align: top;
+    display: inline-block;
+    box-shadow: 1px 4px 8px 1px rgba(0,0,0,0.4);
+}
+
+div.card:hover {
+    box-shadow: 1px 4px 8px 1px rgba(0,0,0,0.6);
+}
+
+div.card p {
+    margin: 0px;
+}
+
+.lightIcon {
+    color: lavender;
+}
+
+.redIcon {
+    color: red;
+}
+
+.greenIcon {
+    color: lawngreen;
+}
+
+.addInfo:hover {
+    color: lawngreen;
+}
+
+.deleteContactIcon:hover {
+    color: red;
+}
+
+.deleteContact {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    margin: 4px;
+}
+
+/* When the contact info span is hovered, show the delete info icon. Hide it otherwise. https://stackoverflow.com/a/36952251/1348592 */
+span.contactInfo:hover + i,
+span.contactInfo + i:hover {
+    color: red;
+    visibility: visible;
+}
+
+span.contactInfo + i {
+    visibility: hidden;
+}
+
+textarea.spanEdit {
+
+}
+
+input[type="radio"] {
+    vertical-align: text-bottom;
+}
+
+/* END CUSTOMER CONTACT CARDS */

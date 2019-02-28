@@ -1,0 +1,286 @@
+﻿/*
+ * It is advised not to edit the smartadmin_production.css
+ * as this will override any changes you make in the 
+ * later versions of this theme. 
+ * 
+ * We advise that you use use this CSS to override 
+ * SmartAdmin styles. 
+ * 
+ * Rename the stylesheet to whatever your liking so it will stay
+ * unique to you with each update of SmartAdmin.
+ */
+
+/*
+ * INDEX
+ * 
+ * - HTML
+ * - BODY
+ * - CUSTOM STYLES
+ */
+
+.btn-glyphicon {
+    padding: 8px;
+    background: #ffffff;
+    margin-right: 4px;
+}
+
+.icon-btn {
+    padding: 0px 10px 2px 1px;
+    border-radius: 30px;
+    font-size: 9px !important;
+}
+
+.form-control {
+    padding: 0px 0px;
+}
+
+.labPad {
+    color: tomato;
+    padding-top: 8px;
+}
+
+.form-control {
+    height: 24px !important;
+}
+
+.dropzone .dz-preview .textContr .dz-details {
+    text-align: start !important;
+}
+
+
+input[type=search] {
+    -webkit-appearance: textfield;
+    -webkit-box-sizing: content-box;
+    font-family: inherit;
+    font-size: 100%;
+}
+
+input::-webkit-search-decoration,
+input::-webkit-search-cancel-button {
+    display: none;
+}
+
+
+input[type=search] {
+    height: 11px;
+    /*background: #ffffff url(https://static.tumblr.com/ftv85bp/MIXmud4tx/search-icon.png) no-repeat 9px center;*/
+    border: solid 1px #46b2ff;
+    padding: 9px 10px 9px 32px;
+    width: 55px;
+    -webkit-border-radius: 10em;
+    -moz-border-radius: 10em;
+    border-radius: 15px;
+    -webkit-transition: all .5s;
+    -moz-transition: all .5s;
+    transition: all .5s;
+}
+
+    input[type=search]:focus {
+        width: 100px;
+        background-color: #fff;
+        border-color: #46b2ff;
+        -webkit-box-shadow: 0 0 5px rgba(109,207,246,.5);
+        -moz-box-shadow: 0 0 5px rgba(109,207,246,.5);
+        box-shadow: 0 0 5px rgba(109,207,246,.5);
+    }
+
+
+input:-moz-placeholder {
+    color: #46b2ff;
+}
+
+input::-webkit-input-placeholder {
+    color: #46b2ff;
+}
+
+
+
+
+.ui-autocomplete {
+    /* for IE6 which not support max-height it can be width: 350px; */
+    max-height: 300px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+    /* add padding to account for vertical scrollbar */
+}
+    /*.ui-autocomplete.ui-menu { opacity: 0.9; }*/
+    .ui-autocomplete.ui-menu .ui-menu-item {
+        font-size: 1.15em;
+    }
+
+    .ui-autocomplete.ui-menu a.ui-state-hover {
+        border-color: tomato
+    }
+
+.ui-resizable-handle {
+    z-index: inherit !important;
+}
+
+.ui-menu .ui-menu-item a.ui-corner-all:hover, .ui-menu .ui-menu-item a.ui-corner-all:focus, .ui-menu .ui-menu-item a.ui-corner-all:active {
+    background: tomato !important;
+    color: #000;
+    border-radius: 0;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    background: #ff8a00;
+    border: none;
+    color: #000;
+    border-radius: 0;
+    font-weight: normal;
+}
+
+/* Custom dropdown */
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+    .custom-dropdown select {
+        background-color: #46b2ff;
+        color: #fff !important;
+        font-size: inherit;
+        padding: .5em;
+        padding-right: 2.4em;
+        border: 0;
+        margin: 0;
+        border-radius: 3px;
+        text-indent: 0.01px;
+        -webkit-appearance: button; /* hide default arrow in chrome OSX */
+    }
+
+    .custom-dropdown::before,
+    .custom-dropdown::after {
+        content: "";
+        position: absolute;
+        pointer-events: none;
+    }
+
+    .custom-dropdown::after { /*  Custom dropdown arrow */
+        content: "\25BC";
+        height: 1em;
+        font-size: .625em;
+        line-height: 1;
+        right: 1.2em;
+        top: 50%;
+        margin-top: -.5em;
+    }
+
+    .custom-dropdown::before { /*  Custom dropdown arrow cover */
+        width: 2em;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        border-radius: 0 3px 3px 0;
+    }
+
+    .custom-dropdown select[disabled] {
+        color: rgba(0,0,0,.3);
+    }
+
+        .custom-dropdown select[disabled]::after {
+            color: rgba(0,0,0,.1);
+        }
+
+    .custom-dropdown::before {
+        background-color: rgba(0,0,0,.15);
+    }
+
+    .custom-dropdown::after {
+        color: rgba(0,0,0,.4);
+    }
+
+.fontawesomedollar-select {
+    font-family: 'FontAwesome', 'Helvetica';
+}
+
+.fontawesomecustomer-select {
+    font-family: 'FontAwesome', 'Helvetica';
+}
+
+.fontawesome-select {
+    font-family: 'FontAwesome', 'Helvetica';
+    color: #ffffff !important;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.btn_search {
+    border-color: #cccccc !important;
+    background-color: #46b2ff;
+    color: white;
+    border-radius: 10px;
+    height: 40px;
+    width: 95px;
+    border-top-left-radius: 15px !important;
+    border-bottom-left-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+    border-bottom-right-radius: 15px !important
+}
+
+    .btn_search:hover {
+        color: white;
+        background-color: tomato
+    }
+/*button tool*/
+#menu1 {
+    border-color: #cccccc !important;
+    background-color: #46b2ff;
+    color: white;
+    border-radius: 10px;
+    height: 40px;
+    width: 95px;
+    border-top-left-radius: 15px !important;
+    border-bottom-left-radius: 15px !important;
+    border-top-right-radius: 15px !important;
+    border-bottom-right-radius: 15px !important
+}
+
+    #menu1:hover {
+        background-color: tomato
+    }
+
+.fa-calendar {
+    color: #46b2ff;
+}
+
+#finishdate1, #startdate1 {
+    height: 30px !important
+}
+
+.currency_dropdown {
+    width: 50%
+}
+
+#Currency {
+    width: 100%
+}
+/*Image in Edid hyperlink*/
+.edit_hyperlink {
+    height: 30px;
+    width: 30px;
+    display: block;
+    margin-top: -2px;
+    background: url("/Content/img/Edit_icon_32x32.png") no-repeat
+}
+
+    .edit_hyperlink:hover {
+        background: url("/Content/img/Edit_icon_32x32_hover.png") no-repeat
+    }
+/*Image in Delete hyperlink*/
+.delete_hyperlink {
+    height: 30px;
+    width: 30px;
+    display: block;
+    margin-top: -2px;
+    background: url("/Content/img/delete_icon_32x32.png") no-repeat
+}
+
+    .delete_hyperlink:hover {
+        background: url("/Content/img/delete_icon_hover_32x32.png") no-repeat
+    }

@@ -1,0 +1,61 @@
+﻿    <!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+@*<script src="~/Scripts/plugins/jquery/jquery-3.3.1.min.js"></script>*@
+
+<script src="~/Scripts/libs/jquery-2.1.1.min.js"></script>
+<script src="~/Scripts/libs/jquery-ui-1.10.3.min.js"></script>
+
+@*<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>*@
+@*<script>if (!window.jQuery) { document.write('<script src="/scripts/libs/jquery-2.1.1.min.js"><\/script>'); }</script>*@
+@*<script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>*@
+@*<script>if (!window.jQuery.ui) { document.write('<script src="/scripts/libs/jquery-ui-1.10.3.min.js"><\/script>'); }</script>*@
+
+<!-- DropZones : plugin -->
+@Scripts.Render("~/bundles/dropzone")
+
+<!-- Forms : plugin -->
+@Scripts.Render("~/scripts/forms")
+
+
+<!-- IMPORTANT: SmartAdmin Core -->
+@Scripts.Render("~/scripts/smartadmin")
+
+<!-- Dropzone: Settings -->
+@Scripts.Render("~/Scripts/FormDropzone.js")
+
+<!-- DataTables : plugin -->
+@Scripts.Render("~/scripts/datatables")
+
+<!-- "Application Scripts" -->
+@Scripts.Render("~/Scripts/appJs")
+
+<!-- jQGrid : plugin -->
+@Scripts.Render("~/bundles/jq-grid")
+
+<!-- Home: custom js -->
+@Scripts.Render("~/bundles/customJs")
+@Scripts.Render("~/Scripts/alertify/alertify.js")
+<script>
+    $(document).ready(function () {
+        pageSetUp();
+    });
+</script>
+
+@if (@Model is HelperResult)
+{
+    @Model
+}
+<!-- Your GOOGLE ANALYTICS CODE Below-->
+@*<script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'xx-xxxxxxxx-x']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script');
+            ga.type = 'text/javascript';
+            ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(ga, s);
+        })();
+    </script>*@
