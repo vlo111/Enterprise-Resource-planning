@@ -13,8 +13,7 @@ namespace Enterprise_Resource_planning.Controllers
 {
     public class ERPController : Controller
     {
-        public static
-        UnitOfWork _unitOfWork = new UnitOfWork();
+        public static UnitOfWork _unitOfWork = new UnitOfWork();
         private static List<int> selRowIds = new List<int>();
         private static object Lock = new object();
         public static Dictionary<int, string> temp_listIds = new Dictionary<int, string>();
