@@ -214,7 +214,7 @@
   display: block;
 }
 .alertify.ajs-movable:not(.ajs-maximized) .ajs-header {
-    text-align: center;
+    color: red;
     cursor: move;
 }
 .alertify.ajs-modeless .ajs-dimmer,

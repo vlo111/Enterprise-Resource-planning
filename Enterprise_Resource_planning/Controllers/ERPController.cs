@@ -16,7 +16,7 @@ namespace Enterprise_Resource_planning.Controllers
         public static UnitOfWork _unitOfWork = new UnitOfWork();
         private static List<int> selRowIds = new List<int>();
         private static object Lock = new object();
-        public static Dictionary<int, string> temp_listIds = new Dictionary<int, string>();
+        public static Dictionary<string, string> temp_listIds = new Dictionary<string, string>();
 
         /// <summary>
         /// Builds a JQGrid table! Sort, Pagination and Filter search
@@ -339,12 +339,9 @@ namespace Enterprise_Resource_planning.Controllers
                     }
                     foreach (var PartID in values)
                     {
-                        var part = _unitOfWork.PartRepository.Get(p => p.PartID == PartID).FirstOrDefault();
-                        var PartNo = _unitOfWork.AltPartRepository.Get(p => p.PartID == PartID).Select(p => p.PartNo).FirstOrDefault();
-                        if (PartNo != null)
-                            temp_listIds.Add(PartID, PartNo);
-                        else
-                            temp_listIds.Add(PartID, part.Name);
+                        var part = _unitOfWork.PartRepository.GetWithInclude(p => p.PartID == PartID, p => p.CustomerContact).FirstOrDefault();
+                        part.PartPrimary = part.PartPrimary.Replace(" ", "");
+                        temp_listIds.Add(part.PartPrimary, part.CustomerContact.First);
                     }
                     ViewBag.list_rows = temp_listIds;
                     return Json(new { success = true, responseText = "", data = JsonConvert.SerializeObject(temp_listIds) }, JsonRequestBehavior.AllowGet);
@@ -367,38 +364,39 @@ namespace Enterprise_Resource_planning.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete()
         {
-            try
-            {
-                foreach (var partDict in temp_listIds)
-                {
-                    var part = _unitOfWork.PartRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
-                    if (part.MeasUnit.ShortDescription == null)
-                        part.MeasUnit = (await _unitOfWork.MeasUnitRepository.Take(1)).FirstOrDefault();
-                    if (part.Category.CategoryName == null)
-                        part.Category = (await _unitOfWork.CategoryRepository.Take(1)).FirstOrDefault();
-                    var altPart = _unitOfWork.AltPartRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
-                    var price = _unitOfWork.PriceRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
-                    if (price != null)
-                        await _unitOfWork.PriceRepository.Remove(price);
-                    if (altPart != null)
-                        await _unitOfWork.AltPartRepository.Remove(altPart);
-                    await _unitOfWork.PartRepository.Remove(part);
-                    (CacheManager.List as List<ListPTable>).RemoveAll(p => p.PartID == partDict.Key);
-                }
-                return Json(new { success = true, responseText = "successfully deleted" }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                if (e.InnerException.Message != null)
-                {
-                    return Json(new { success = false, responseText = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
-                }
-                else
-                {
-                    return Json(new { success = false, responseText = e.Message }, JsonRequestBehavior.AllowGet);
 
-                }
-            }
+            //try
+            //{
+            //    foreach (var partDict in temp_listIds)
+            //    {
+            //        var part = _unitOfWork.PartRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
+            //        if (part.MeasUnit.ShortDescription == null)
+            //            part.MeasUnit = (await _unitOfWork.MeasUnitRepository.Take(1)).FirstOrDefault();
+            //        if (part.Category.CategoryName == null)
+            //            part.Category = (await _unitOfWork.CategoryRepository.Take(1)).FirstOrDefault();
+            //        var altPart = _unitOfWork.AltPartRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
+            //        var price = _unitOfWork.PriceRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
+            //        if (price != null)
+            //            await _unitOfWork.PriceRepository.Remove(price);
+            //        if (altPart != null)
+            //            await _unitOfWork.AltPartRepository.Remove(altPart);
+            //        await _unitOfWork.PartRepository.Remove(part);
+            //        (CacheManager.List as List<ListPTable>).RemoveAll(p => p.PartID == partDict.Key);
+            //    }
+            return Json(new { success = true, responseText = "successfully deleted" }, JsonRequestBehavior.AllowGet);
+            //}
+            //catch (Exception e)
+            //{
+            //    if (e.InnerException.Message != null)
+            //    {
+            //return Json(new { success = false, responseText = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
+            //    }
+            //    else
+            //    {
+            //        return Json(new { success = false, responseText = e.Message }, JsonRequestBehavior.AllowGet);
+
+            //    }
+            //}
 
         }
         public string Delete(string id)

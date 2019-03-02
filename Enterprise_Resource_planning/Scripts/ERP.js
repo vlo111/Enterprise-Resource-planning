@@ -142,69 +142,67 @@ function selRowId() {
         url: '/ERP/Delete',
         data: postData,
         success: function (response) {
-
             var datas = response.data.replace(new RegExp('"', 'g'), '').replace('{', '').replace('}', '').split(",");
-            if (!alertify.myAlert) {
-                //define a new dialog
-                alertify.dialog('myAlert', function () {
-                    if (response.success) {
-                        return {
-                            main: function (message) {
-                                this.message = message;
-                            },
-                            setup: function () {
-                                return {
-                                    buttons: [{ text: "ok!", key: 26/*Esc*/ }, { text: "cancel!", key: 27/*Esc*/ }],
-                                    focus: { element: 0 }
-                                };
-                            },
-                            prepare: function () {
-
-                                for (var i = 0; i < datas.length; i++) {
-                                    var two_slips = datas[i].split(":");
-                                }
-                                this.setContent('<div class="row"><label>Name - </label><em>' + two_slips[0] + '</em><label> Customer - </label><em>' + two_slips[1] + '</em></div>');
-                                this.setHeader('<div class="row"><label style="font-size: x-large; color: #2d8dd0;">Delete Parts </label><div class="row"><em style="font-size: small; color: #c21212;"> Are you sure you want to delete this field(s)?</em></div>');
-                            },
-                            hooks: {
-                                onshow: function () {
-                                },
-                                onclose: function () {
-                                },
-                                onupdate: function () {
-                                }
-                            }
-                        };
-                    }
-                    else {
-                        return {
-                            main: function (message) {
-                                this.message = message;
-                            },
-                            setup: function () {
-                                return {
-                                    buttons: [{ text: "cancel!", key: 27/*Esc*/ }],
-                                    focus: { element: 0 }
-                                };
-                            },
-                            prepare: function () {
-                                this.setContent(this.message);
-                            },
-                            hooks: {
-                                onshow: function () {
-                                },
-                                onclose: function () {
-                                },
-                                onupdate: function () {
-                                }
-                            }
-                        };
-                    }
-                });
+            var arr = [];
+            for (var i = 0; i < datas.length; i++) {
+                arr[i] = datas[i].split(":");
             }
-            //launch it.
 
-            alertify.myAlert(response.responseText);
+            var parent_div = document.createElement("div");
+            parent_div.setAttribute("class", "row");
+            parent_div.setAttribute("style", "border-style: double;border-color:red");
+
+            var div_customer = document.createElement("div");
+            var div_product = document.createElement("div");
+
+            div_customer.setAttribute("class", "col-sm-6");
+            div_product.setAttribute("class", "col-sm-6");
+            document.getElementById("dlgContent").appendChild(div_customer);
+            document.getElementById("dlgContent").appendChild(div_product);
+            var label_product = document.createElement("label");
+            var label_customer = document.createElement("label");
+            label_product.setAttribute("class", "fa fa-product");
+            label_customer.setAttribute("class", "fa fa-customer");
+            label_product.setAttribute("style", "color:#46b2ff");
+            label_customer.setAttribute("style", "color:#46b2ff");
+            label_product.innerHTML = "&#xf01c;  Product";
+            label_customer.innerHTML = "&#xf2c0; Customer";
+
+            div_product.appendChild(label_product);
+            div_customer.appendChild(label_customer);
+
+            for (var j = 0; j < arr.length; j++) {
+                var paragrafp_product = document.createElement("p");
+                var paragrafp_customer = document.createElement("p");
+                paragrafp_product.appendChild(document.createTextNode(arr[j][0]));
+                paragrafp_customer.appendChild(document.createTextNode(arr[j][1]));
+                div_product.appendChild(paragrafp_product);
+                div_customer.appendChild(paragrafp_customer);
+            }
+            parent_div.appendChild(div_product);
+            parent_div.appendChild(div_customer);
+            document.getElementById("dlgContent").appendChild(parent_div);
+
+            var dlgContentHTML = $('#dlgContent').html();
+
+            $('#dlgContent').html("");
+            alertify.confirm(dlgContentHTML).set('onok', function (closeevent, value) {
+                if (closeevent.button.text == "YES") {
+                    alertify.success('Successful deleted');
+                }
+            }).set({ title: "Are you sure you want to delete this item(s)?" }).set({ labels: { ok: 'YES', cancel: 'NO' } });
+            //#region Create Trash
+            var header = document.getElementsByClassName("ajs-header");
+            var trash = document.createElement("span");
+            if (trash.innerText === "") {
+
+                trash.innerText = 1;
+                trash.setAttribute("class", "fa fa-trash fa-2x");
+                trash.setAttribute("style", "color:red;float: left;padding-right: 10px;margin-top: -5px");
+                header[0].appendChild(trash);
+            }
+
+            //Endregion
         },
         error: function (response) {
             if (!alertify.myAlert) {
@@ -345,6 +343,7 @@ $(document).ready(function () {
         delete_link.setAttribute('class', 'delete_hyperlink');
         delete_link.setAttribute('role', 'menuitem');
         delete_link.setAttribute('name', 'DelName');
+        delete_link.setAttribute('href', '#');
         delete_link.setAttribute('onclick', 'selRowId()');
         delete_link.setAttribute('tabindex', '-1');
         //delete_link.setAttribute('href', 'ERP/Delete');
