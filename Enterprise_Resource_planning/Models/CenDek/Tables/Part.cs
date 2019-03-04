@@ -58,7 +58,7 @@ namespace Enterprise_Resource_planning.Models.CenDek.Tables
 
         public int? PriceID { get; set; }
 
-        public int MeasUnitID { get; set; }
+        public int? MeasUnitID { get; set; }
 
         public int? PartInventoryID { get; set; }
         public int? CustomerContactID { get; set; }
@@ -70,12 +70,9 @@ namespace Enterprise_Resource_planning.Models.CenDek.Tables
 
         public virtual Image Image { get; set; }
         public virtual ICollection<File> Files { get; set; }
-
         public virtual Category Category { get; set; }
         public virtual MeasUnit MeasUnit { get; set; }
-
         public virtual CustomerContact CustomerContact { get; set; }
-
         public virtual Price Price { get; set; }
     }
 }

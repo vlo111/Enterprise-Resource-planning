@@ -130,7 +130,7 @@ function clearFixedPrice() {
     $('input[name=checkboxFixedPrice]:checked').prop("checked", false);
 }
 // #endregion
-// #region multyple Delete modal
+// #region multyple_Delete_modal
 function selRowId() {
     var selRowIds = $('#jqgrid').jqGrid('getGridParam', 'selarrrow');
 
@@ -147,7 +147,7 @@ function selRowId() {
             for (var i = 0; i < datas.length; i++) {
                 arr[i] = datas[i].split(":");
             }
-
+            // Dialog Content
             var parent_div = document.createElement("div");
             parent_div.setAttribute("class", "row");
             parent_div.setAttribute("style", "border-style: double;border-color:red");
@@ -183,26 +183,25 @@ function selRowId() {
             parent_div.appendChild(div_customer);
             document.getElementById("dlgContent").appendChild(parent_div);
 
+            // open alertify modal
             var dlgContentHTML = $('#dlgContent').html();
-
             $('#dlgContent').html("");
             alertify.confirm(dlgContentHTML).set('onok', function (closeevent, value) {
-                if (closeevent.button.text == "YES") {
-                    alertify.success('Successful deleted');
-                }
-            }).set({ title: "Are you sure you want to delete this item(s)?" }).set({ labels: { ok: 'YES', cancel: 'NO' } });
-            //#region Create Trash
-            var header = document.getElementsByClassName("ajs-header");
-            var trash = document.createElement("span");
-            if (trash.innerText === "") {
+                //if (closeevent.button.text === "YES") {
 
-                trash.innerText = 1;
+                //}
+            }).set({ title: "Are you sure you want to delete this item(s)?" }).set({ labels: { ok: 'YES', cancel: 'NO' } });
+            // write id in Yes button for call post method
+            document.getElementsByClassName("ajs-ok")[0].setAttribute("id", "deleteRows");
+            // Create Trash Icon
+            var header = document.getElementsByClassName("ajs-header");
+            if (!document.getElementsByClassName("ajs-header")[0].contains(document.getElementById("trash"))) {
+                var trash = document.createElement("span");
                 trash.setAttribute("class", "fa fa-trash fa-2x");
+                trash.setAttribute("id", "trash");
                 trash.setAttribute("style", "color:red;float: left;padding-right: 10px;margin-top: -5px");
                 header[0].appendChild(trash);
             }
-
-            //Endregion
         },
         error: function (response) {
             if (!alertify.myAlert) {
@@ -244,7 +243,6 @@ $(document).on("click", '#deleteRows', function (event) {
             if (response.success) {
                 alertify.success(response.responseText);
                 $('#jqgrid').trigger("reloadGrid");
-                $('#myModal').modal('hide');
             }
             else {
                 if (!alertify.myAlert) {
@@ -300,7 +298,6 @@ $(document).on("click", '#deleteRows', function (event) {
 
 });
 // #endregion
-
 $(document).ready(function () {
     window.onload = function () {
 
@@ -343,7 +340,7 @@ $(document).ready(function () {
         delete_link.setAttribute('class', 'delete_hyperlink');
         delete_link.setAttribute('role', 'menuitem');
         delete_link.setAttribute('name', 'DelName');
-        delete_link.setAttribute('href', '#');
+        delete_link.setAttribute('href', 'javascript:void(0)');
         delete_link.setAttribute('onclick', 'selRowId()');
         delete_link.setAttribute('tabindex', '-1');
         //delete_link.setAttribute('href', 'ERP/Delete');

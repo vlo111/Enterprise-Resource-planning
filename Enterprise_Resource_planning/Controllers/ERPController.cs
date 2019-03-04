@@ -340,7 +340,6 @@ namespace Enterprise_Resource_planning.Controllers
                     foreach (var PartID in values)
                     {
                         var part = _unitOfWork.PartRepository.GetWithInclude(p => p.PartID == PartID, p => p.CustomerContact).FirstOrDefault();
-                        part.PartPrimary = part.PartPrimary.Replace(" ", "");
                         temp_listIds.Add(part.PartPrimary, part.CustomerContact.First);
                     }
                     ViewBag.list_rows = temp_listIds;
@@ -364,40 +363,46 @@ namespace Enterprise_Resource_planning.Controllers
         [HttpPost]
         public async Task<ActionResult> Delete()
         {
+            try
+            {
+                List<Part> listPart = new List<Part>();
+                foreach (var partDict in temp_listIds)
+                {
+                    var part = _unitOfWork.PartRepository.GetWithInclude(
+                        p => p.CustomerContact.First == partDict.Value, // where
+                        p => p.CustomerContact,
+                        p => p.Category,
+                        p => p.MeasUnit,
+                        p => p.Price,
+                        p => p.Price.Currency,
+                        p => p.Image).FirstOrDefault();
+                    listPart.Add(part);
+                    part.Category = null;
+                    part.MeasUnit = null;
+                    part.Price = null;
 
-            //try
-            //{
-            //    foreach (var partDict in temp_listIds)
-            //    {
-            //        var part = _unitOfWork.PartRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
-            //        if (part.MeasUnit.ShortDescription == null)
-            //            part.MeasUnit = (await _unitOfWork.MeasUnitRepository.Take(1)).FirstOrDefault();
-            //        if (part.Category.CategoryName == null)
-            //            part.Category = (await _unitOfWork.CategoryRepository.Take(1)).FirstOrDefault();
-            //        var altPart = _unitOfWork.AltPartRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
-            //        var price = _unitOfWork.PriceRepository.Get(p => p.PartID == partDict.Key).FirstOrDefault();
-            //        if (price != null)
-            //            await _unitOfWork.PriceRepository.Remove(price);
-            //        if (altPart != null)
-            //            await _unitOfWork.AltPartRepository.Remove(altPart);
-            //        await _unitOfWork.PartRepository.Remove(part);
-            //        (CacheManager.List as List<ListPTable>).RemoveAll(p => p.PartID == partDict.Key);
-            //    }
-            return Json(new { success = true, responseText = "successfully deleted" }, JsonRequestBehavior.AllowGet);
-            //}
-            //catch (Exception e)
-            //{
-            //    if (e.InnerException.Message != null)
-            //    {
-            //return Json(new { success = false, responseText = e.InnerException.Message }, JsonRequestBehavior.AllowGet);
-            //    }
-            //    else
-            //    {
-            //        return Json(new { success = false, responseText = e.Message }, JsonRequestBehavior.AllowGet);
+                    (CacheManager.List as List<Part>).RemoveAll(p => p.PartID == part.PartID);
+                }
+                await _unitOfWork.PartRepository.RemoveRange(listPart);
+            }
+            catch (Exception e)
+            {
+                if (e.InnerException.Message != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        responseText = e.InnerException.Message
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(new { success = false, responseText = e.Message }, JsonRequestBehavior.AllowGet);
 
-            //    }
-            //}
+                }
+            }
 
+            return Json(new { success = true, responseText = "Successfully deleted" }, JsonRequestBehavior.AllowGet);
         }
         public string Delete(string id)
         {

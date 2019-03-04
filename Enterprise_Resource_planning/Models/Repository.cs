@@ -44,7 +44,16 @@ namespace Enterprise_Resource_planning.Models
         }
         public async Task Remove(TEntity item)
         {
-            _dbSet.Remove(item);
+            _context.Entry(item).State = EntityState.Deleted;
+            _dbSet.Attach(item);
+            await _context.SaveChangesAsync();
+        }
+        public async Task RemoveRange(List<TEntity> items)
+        {
+            foreach (var item in items)
+            {
+                _context.Entry(item).State = EntityState.Deleted;
+            }
             await _context.SaveChangesAsync();
         }
         #endregion
@@ -79,7 +88,7 @@ namespace Enterprise_Resource_planning.Models
             return await Include(includeProperties).ToListAsync();
         }
         // Get All, p => p.(FK Table) Includes FK table
-        public  IEnumerable<TEntity> GetWithIncludes(params Expression<Func<TEntity, object>>[] includeProperties)
+        public IEnumerable<TEntity> GetWithIncludes(params Expression<Func<TEntity, object>>[] includeProperties)
         {
             return Include(includeProperties).ToList();
         }
@@ -87,7 +96,7 @@ namespace Enterprise_Resource_planning.Models
         public IEnumerable<TEntity> GetWithInclude(Func<TEntity, bool> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
         {
             var query = Include(includeProperties);
-            return query.Where(predicate).ToList();
+            return query.AsNoTracking().Where(predicate).ToList();
         }
         #endregion
         private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
