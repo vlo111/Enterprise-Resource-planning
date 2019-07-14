@@ -16,5 +16,6 @@ namespace Enterprise_Resource_planning.Models.CenDek.Tables
         public string CategoryName { get; set; }
 
         public int? CategoryParentID { get; set; }
+        public virtual ICollection<Part> Parts { get; set; }
     }
 }

@@ -9,10 +9,10 @@ namespace Enterprise_Resource_planning.Models.CenDek.Tables
     [Table("Currency")]
     public partial class Currency
     {
-        public Currency()
-        {
-            this.Prices = new List<Price>();
-        }
+        //public Currency()
+        //{
+        //    this.Prices = new List<Price>();
+        //}
         public int CurrencyID { get; set; }
 
         [Required]
@@ -21,6 +21,6 @@ namespace Enterprise_Resource_planning.Models.CenDek.Tables
 
         [Required]
         public string CurrencyName { get; set; }
-        public virtual ICollection<Price> Prices { get; set; }
+        //public virtual ICollection<Price> Prices { get; set; }
     }
 }

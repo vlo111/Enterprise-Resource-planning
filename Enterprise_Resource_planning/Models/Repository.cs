@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Enterprise_Resource_planning.Models.CenDek;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -10,8 +11,9 @@ namespace Enterprise_Resource_planning.Models
     public interface IGenericRepository<TEntity>
     {
         Task<TEntity> FindById(int id);
-        Task<IEnumerable<TEntity>> Get();
+        IEnumerable<TEntity> Get();
         IEnumerable<TEntity> Get(Func<TEntity, bool> predicate);
+        TEntity GetOne(Func<TEntity, bool> predicate);
         Task Create(TEntity item);
         Task Remove(TEntity item);
         Task Update(TEntity item);
@@ -37,9 +39,20 @@ namespace Enterprise_Resource_planning.Models
             _dbSet.Add(item);
             await _context.SaveChangesAsync();
         }
+        static int a = 0;
         public async Task Update(TEntity item)
         {
-            _context.Entry(item).State = EntityState.Modified;
+            if (a == 1)
+            {
+                _context.Entry(item).State = EntityState.Detached;
+            }
+            else if (a == 0)
+            {
+                // If first time to by UPDATE
+                _context.Entry(item).State = EntityState.Modified;
+            }
+
+            a++;
             await _context.SaveChangesAsync();
         }
         public async Task Remove(TEntity item)
@@ -61,36 +74,44 @@ namespace Enterprise_Resource_planning.Models
         public async Task<IEnumerable<TEntity>> Take(int id)
         {
 
-            return await _dbSet.Take(id).ToListAsync();
+            return await _dbSet.Take(id).AsNoTracking().ToListAsync();
         }
         public async Task<IEnumerable<TEntity>> Skip(int id)
         {
 
-            return await _dbSet.Skip(id).ToListAsync();
+            return await _dbSet.Skip(id).AsNoTracking().ToListAsync();
         }
         #endregion
         #region Get _dbSet
-        //Get All,  ----one table
-        public async Task<IEnumerable<TEntity>> Get()
+        //Get one,  ----one table
+        public TEntity GetOne(Func<TEntity, bool> predicate)
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            return _dbSet.AsNoTracking().Where(predicate).FirstOrDefault();
         }
-        //Get Table => Table.(..),  ----one table
+
+        //Get Table => Table.(..),  ----where predicate Ids exist in table
         public IEnumerable<TEntity> Get(Func<TEntity, bool> predicate)
         {
             return _dbSet.AsNoTracking().Where(predicate).ToList();
         }
 
+        //Get All,  ----all tables
+        public IEnumerable<TEntity> Get()
+        {
+            return _dbSet.AsNoTracking().ToList();
+        }
+        #endregion
 
+        #region Includes Forign Tables
         // Get All, p => p.(FK Table) Includes FK table
         public async Task<IEnumerable<TEntity>> GetWithInclude(params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            return await Include(includeProperties).ToListAsync();
+            return await Include(includeProperties).AsNoTracking().ToListAsync();
         }
         // Get All, p => p.(FK Table) Includes FK table
         public IEnumerable<TEntity> GetWithIncludes(params Expression<Func<TEntity, object>>[] includeProperties)
         {
-            return Include(includeProperties).ToList();
+            return Include(includeProperties).AsNoTracking().ToList();
         }
         // Get Table => Table.(..),p => p.(FK Table) Includes FK table
         public IEnumerable<TEntity> GetWithInclude(Func<TEntity, bool> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
@@ -98,13 +119,13 @@ namespace Enterprise_Resource_planning.Models
             var query = Include(includeProperties);
             return query.AsNoTracking().Where(predicate).ToList();
         }
-        #endregion
         private IQueryable<TEntity> Include(params Expression<Func<TEntity, object>>[] includeProperties)
         {
             IQueryable<TEntity> query = _dbSet.AsNoTracking();
             return includeProperties
                 .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
         }
+        #endregion
     }
 
 }

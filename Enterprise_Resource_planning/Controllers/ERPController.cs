@@ -65,7 +65,7 @@ namespace Enterprise_Resource_planning.Controllers
                 // Pagination in jqgrid
                 if (!string.IsNullOrEmpty(name))
                 {
-                    name = name.Replace(" ", "");
+                    //name = name.Replace(" ", "");
                     Results = Results.Where(p => p.PartPrimary == name);
                     return Json(new
                     {
@@ -89,11 +89,24 @@ namespace Enterprise_Resource_planning.Controllers
 
                 if (Currency != null)
                     Results = Results.Where(p => p.CurrencyID == Currency);
-
-                if (!string.IsNullOrEmpty(startdate1))
-                    Results = Results.Where(p => p.ValidStart == DateTime.Parse(startdate1));
-                if (!string.IsNullOrEmpty(finishdate1))
-                    Results = Results.Where(p => p.ValidEnd == DateTime.Parse(finishdate1));
+                //if (!string.IsNullOrEmpty(startdate1))
+                //{
+                //    var _dateNow = DateTime.Now.Date;
+                //    foreach (var item in Results)
+                //    {
+                //        if ((DateTime.Now.Date - item.ValidStart) < _dateNow - DateTime.Parse(startdate1))
+                //            Results = Results.Where(p => p.PartID == item.PartID);
+                //    }
+                //}
+                //if (!string.IsNullOrEmpty(finishdate1))
+                //{
+                //    var _dateNow = DateTime.Now.Date;
+                //    foreach (var item in Results)
+                //    {
+                //        if ((DateTime.Now.Date - item.ValidEnd) > _dateNow - DateTime.Parse(finishdate1))
+                //            Results.ToList().Add(item);
+                //    }
+                //}
                 #endregion
 
                 // Sort a rows of Part Table
@@ -213,109 +226,134 @@ namespace Enterprise_Resource_planning.Controllers
         ///                        8-checkbox Fixed Price
         /// <param name="name"></param> which buttons[Apply] is clicked
         /// <returns></returns>
+
+
         [HttpPost]
         public async Task<ActionResult> Edit(List<int> values, List<string> editList, string name)
         {
-            if (values != null)
-                selRowIds = values;
-            else
-                values = selRowIds;
+            try
+            {
+                if (values != null)
+                    selRowIds = values;
+                else
+                    values = selRowIds;
 
-            if (selRowIds == null)
-            {
-                return Json(new { success = false, responseText = "Please select row(s)" }, JsonRequestBehavior.AllowGet);
-            }
-            foreach (var partID in values)
-            {
-                var part = _unitOfWork.PartRepository.Get(p => p.PartID == partID).FirstOrDefault();
-                if (part != null)
+                if (selRowIds == null)
                 {
-                    var price = _unitOfWork.PriceRepository.Get(p => p.PartID == partID).FirstOrDefault();
-                    if (price != null)
+                    return Json(new { success = false, responseText = "Please select row(s)" }, JsonRequestBehavior.AllowGet);
+                }
+                foreach (var partID in values)
+                {
+                    var part = _unitOfWork.PartRepository.GetOne(p => p.PartID == partID);
+                    if (part != null)
                     {
-                        if (part.MeasUnit.ShortDescription == null)
-                            part.MeasUnit = (await _unitOfWork.MeasUnitRepository.Take(1)).FirstOrDefault();
-                        if (part.Category.CategoryName == null)
-                            part.Category = (await _unitOfWork.CategoryRepository.Take(1)).FirstOrDefault();
-                        var list = (CacheManager.List as List<ListPTable>).Where(p => p.PartID == partID).FirstOrDefault();
+                        var price = _unitOfWork.PriceRepository.GetOne(p => p.ID == part.PriceID);
 
-                        if (name == "date")
+                        if (price != null)
                         {
-                            if (editList.ElementAt(0) == "Start")
+                            var list = (CacheManager.List as List<Part>).Where(p => p.PartID == partID).FirstOrDefault();
+
+                            if (name == "date")
                             {
-                                price.ValidStart = DateTime.ParseExact(editList.ElementAt(1), "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                                list.ValidStart = price.ValidStart;
+                                if (editList.ElementAt(0) == "Start")
+                                {
+                                    price.ValidStart = DateTime.ParseExact(editList.ElementAt(1), "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                    list.Price.ValidStart = price.ValidStart;
+                                }
+                                else if (editList.ElementAt(0) == "End")
+                                {
+                                    price.ValidEnd = DateTime.ParseExact(editList.ElementAt(1), "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                                    list.Price.ValidEnd = price.ValidEnd;
+                                }
+                                if (editList.ElementAt(2) == "on")
+                                {
+                                    price.EmailCustomer = true;
+                                }
                             }
-                            else if (editList.ElementAt(0) == "End")
+                            if (name == "percentagePrice")
                             {
-                                price.ValidEnd = DateTime.ParseExact(editList.ElementAt(1), "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                                list.ValidEnd = price.ValidEnd;
+                                if (editList.ElementAt(3) == "PSell")
+                                {
+                                    var sell = Convert.ToDecimal((float)price.SellValue - Convert.ToSingle(editList.ElementAt(4)) / 100F * (float)price.SellValue);
+                                    if (sell != list.Price.SellValue)
+                                    {
+                                        price.SellValue = sell;
+                                        list.Price.SellValue = sell;
+                                    }
+                                }
+                                else if (editList.ElementAt(3) == "PCost")
+                                {
+                                    var cost = Convert.ToDecimal((float)price.CostValue + Convert.ToSingle(editList.ElementAt(4)) / 100F * (float)price.CostValue);
+                                    if (cost != list.Price.CostValue)
+                                    {
+                                        price.CostValue = cost;
+                                        list.Price.CostValue = cost;
+                                    }
+                                }
+                                if (editList.ElementAt(5) == "on")
+                                {
+                                    price.EmailCustomer = true;
+                                }
                             }
-                            if (editList.ElementAt(2) == "on")
+                            if (name == "FixedPrice")
                             {
-                                price.EmailCustomer = true;
+                                if (editList.ElementAt(6) == "FSell")
+                                {
+                                    var sell = Convert.ToDecimal(editList.ElementAt(7));
+                                    if (sell != list.Price.SellValue)
+                                    {
+                                        price.SellValue = sell;
+                                        list.Price.SellValue = sell;
+                                    }
+                                }
+                                else if (editList.ElementAt(6) == "FCost")
+                                {
+                                    var cost = Convert.ToDecimal(editList.ElementAt(7));
+                                    if (cost != list.Price.CostValue)
+                                    {
+                                        price.CostValue = cost;
+                                        list.Price.CostValue = cost;
+                                    }
+                                }
+                                if (editList.Count >= 9)
+                                {
+                                    if (editList.ElementAt(8) == "on")
+                                        price.EmailCustomer = true;
+                                }
                             }
+
+
+
+
+                            if (price.Currency.CurrencyID != price.CurrencyID)
+                                price.Currency = _unitOfWork.CurrencyRepository.GetOne(p => p.CurrencyID == price.CurrencyID);
+
+                            if (part.MeasUnit.ShortDescription == null)
+                                part.MeasUnit = (await _unitOfWork.MeasUnitRepository.Take(1)).FirstOrDefault();
+                            if (part.Category.CategoryName == null)
+                                part.Category = (await _unitOfWork.CategoryRepository.Take(1)).FirstOrDefault();
+
+
+
+                            var index = (CacheManager.List as List<Part>).FindIndex(p => p.PriceID == price.ID);
+                            (CacheManager.List as List<Part>)[index] = list;
+
+                            await _unitOfWork.PriceRepository.Update(price);
                         }
-                        if (name == "percentagePrice")
+                        else
                         {
-                            if (editList.ElementAt(3) == "PSell")
-                            {
-                                var sell = Convert.ToDecimal((float)price.SellValue - Convert.ToSingle(editList.ElementAt(4)) / 100F * (float)price.SellValue);
-                                if (sell != list.SellValue)
-                                {
-                                    price.SellValue = sell;
-                                    list.SellValue = sell;
-                                }
-                            }
-                            else if (editList.ElementAt(3) == "PCost")
-                            {
-                                var cost = Convert.ToDecimal((float)price.CostValue - Convert.ToSingle(editList.ElementAt(4)) / 100F * (float)price.SellValue);
-                                if (cost != list.CostValue)
-                                {
-                                    price.CostValue = cost;
-                                    list.CostValue = cost;
-                                }
-                            }
-                            if (editList.ElementAt(5) == "on")
-                            {
-                                price.EmailCustomer = true;
-                            }
+                            return Json(new { success = false, responseText = "There is no price on the part, PartNo - " + (CacheManager.List as List<Part>).Where(p => p.PartID == partID).Select(p => p.PartPrimary).FirstOrDefault() }, JsonRequestBehavior.AllowGet);
                         }
-                        if (name == "FixedPrice")
-                        {
-                            if (editList.ElementAt(6) == "FSell")
-                            {
-                                var sell = Convert.ToDecimal(editList.ElementAt(7));
-                                if (sell != list.SellValue)
-                                {
-                                    price.SellValue = sell;
-                                    list.SellValue = sell;
-                                }
-                            }
-                            else if (editList.ElementAt(6) == "FCost")
-                            {
-                                var cost = Convert.ToDecimal(editList.ElementAt(7));
-                                if (cost != list.CostValue)
-                                {
-                                    price.CostValue = cost;
-                                    list.CostValue = cost;
-                                }
-                            }
-                            if (editList.ElementAt(8) == "on")
-                            {
-                                price.EmailCustomer = true;
-                            }
-                        }
-                        await _unitOfWork.PriceRepository.Update(price);
-                    }
-                    else
-                    {
-                        return Json(new { success = false, responseText = "There is no price on the part, PartNo - " + (CacheManager.List as List<ListPTable>).Where(p => p.PartID == partID).Select(p => p.PartPrimary).FirstOrDefault() }, JsonRequestBehavior.AllowGet);
                     }
                 }
+                return Json(new { success = true, responseText = "successfully changed" }, JsonRequestBehavior.AllowGet);
+                //return PartialView("PriceManagement/_Edit");
             }
-            return Json(new { success = true, responseText = "successfully changed" }, JsonRequestBehavior.AllowGet);
-            //return PartialView("PriceManagement/_Edit");
+            catch (Exception e)
+            {
+                var ew = e.Message;
+                throw;
+            }
         }
         /// <summary>
         /// Multiple deleting open modal action[GET] Partial View 
@@ -428,19 +466,19 @@ namespace Enterprise_Resource_planning.Controllers
         /// </summary>
         /// <param name="term"></param>
         /// <returns></returns>
-        public async Task<JsonResult> AutocompleteSearch(string term)
+        public JsonResult AutocompleteSearch(string term)
         {
             // Id and Name
             // var models = new[] { new { value = 0, title = "" } }.ToList();
             var models = new[] { new { title = "" } }.ToList();
             if (string.IsNullOrEmpty(term))
             {
-                var mod = (CacheManager.List as List<ListPTable>).Select(p => new { value = p.PartID }).Distinct();
+                var mod = (CacheManager.List as List<Part>).Select(p => new { value = p.PartID }).Distinct();
                 return Json(mod, JsonRequestBehavior.AllowGet);
             }
             else
             {
-                foreach (var item in await _unitOfWork.PartRepository.Get())
+                foreach (var item in _unitOfWork.PartRepository.Get())
                 {
                     // Search ID and Name
                     #region MyRegion
@@ -465,11 +503,5 @@ namespace Enterprise_Resource_planning.Controllers
 
             return Json(models, JsonRequestBehavior.AllowGet);
         }
-        //[HttpPost]
-        //public async Task<JsonResult >AutocompleteSearchSelected(string title)
-        //{
-        //    await GetJqGridValuesAsync(null, null, 1, 10, null, null, null, null, null, title);
-        //    return Json("", JsonRequestBehavior.AllowGet);
-        //}
     }
 }

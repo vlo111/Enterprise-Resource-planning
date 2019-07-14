@@ -220,7 +220,7 @@ function selRowId() {
                         prepare: function () {
                             this.setContent(this.message);
                         }
-                    }
+                    };
                 });
             }
             //launch it.
@@ -285,7 +285,7 @@ $(document).on("click", '#deleteRows', function (event) {
                         prepare: function () {
                             this.setContent(this.message);
                         }
-                    }
+                    };
                 });
             }
             //launch it.
@@ -298,6 +298,11 @@ $(document).on("click", '#deleteRows', function (event) {
 
 });
 // #endregion
+// modal close
+$('#myModal').on('hidden.bs.modal', function (e) {
+    $('#jqgrid').trigger("reloadGrid");
+    $('#modal').modal('toggle');
+});
 $(document).ready(function () {
     window.onload = function () {
 
@@ -427,7 +432,7 @@ $(document).ready(function () {
             });
         }
 
-        // #endregion
+        // #endregion        
     };
 
 
@@ -611,7 +616,7 @@ $(document).ready(function () {
                     if (response.success) {
                         alertify.success(response.responseText);
                         //var ids = $('#jqgrid').jqGrid('getGridParam', 'selarrrow');
-                        $('#jqgrid').trigger("reloadGrid");
+                        // $('#jqgrid').trigger("reloadGrid");
                         //for (var i = 0; i < ids.length; i++) {
                         //    var Row = $("#jqgrid #".concat(ids[i]));
                         //    Row.addClass("ui-state-disabled ui-jqgrid-disablePointerEvents");
@@ -660,7 +665,7 @@ $(document).ready(function () {
                                 prepare: function () {
                                     this.setContent(this.message);
                                 }
-                            }
+                            };
                         });
                     }
                     //launch it.
@@ -694,9 +699,9 @@ $(document).ready(function () {
             { name: 'PartPrimary', index: 'orderby_partname', firstsortorder: 'desc' },
             { name: 'CategoryName', index: 'OrderBy_CategoryName', editable: true },
             { name: 'Description', index: 'OrderBy_Description', editable: true },
+            { name: 'CreatedDate', index: 'OrderBy_DCreated', sorttype: "date", formatoptions: { newformat: 'm-d-Y' }, datefmt: 'm-d-Y', formatter: 'date', align: "left", editable: true },
             { name: 'ValidStart', index: 'OrderBy_Start', sorttype: "date", formatoptions: { newformat: 'm-d-Y' }, datefmt: 'm-d-Y', formatter: 'date', editable: true },
             { name: 'ValidEnd', index: 'OrderBy_End', sorttype: "date", align: "right", formatoptions: { newformat: 'm-d-Y' }, datefmt: 'm-d-Y', formatter: 'date', editable: true },
-            { name: 'CreatedDate', index: 'OrderBy_DCreated', sorttype: "date", formatoptions: { newformat: 'm-d-Y' }, datefmt: 'm-d-Y', formatter: 'date', align: "right", editable: true },
             { name: 'SellValue', index: 'OrderBy_Sell', formatter: 'currency', align: "right", editable: true, defaultvalue: null },
             { name: 'CostValue', index: 'OrderBy_Cost', formatter: 'currency', align: "right", editable: true },
             { name: 'CurrencyName', index: 'OrderBy_CurrencyName', align: "right", editable: true },

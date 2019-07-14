@@ -26,7 +26,7 @@ namespace Enterprise_Resource_planning.Controllers
         public async Task<ActionResult> Index()
         {
             await InitVBAsync();
-            var customer = (await _unitOfWork.CustomerContactRepository.Get()).GroupBy(p => p.First).Select(p => new { name = p.Key }).ToList();
+            var customer = (_unitOfWork.CustomerContactRepository.Get()).GroupBy(p => p.First).Select(p => new { name = p.Key }).ToList();
             ViewBag.CustomerID = new SelectList(customer, "name", "name");
 
 
@@ -94,7 +94,7 @@ namespace Enterprise_Resource_planning.Controllers
                     await _unitOfWork.PriceRepository.Create(price);
 
                     await InitVBAsync();
-                    var customer = await _unitOfWork.CustomerContactRepository.Get();
+                    var customer = _unitOfWork.CustomerContactRepository.Get();
                     var cust = (from p in customer
                                 select new { id = p.CustomerID, name = p.First }).Distinct();
 
@@ -137,12 +137,12 @@ namespace Enterprise_Resource_planning.Controllers
         #region Initialization ViewBag Tables for Index
         public async Task InitVBAsync()
         {
-            ViewBag.ProductLineID = new SelectList(await _unitOfWork.ProductLineRepository.Get(), "ProductLineID", "Name");
-            ViewBag.MeasUnitID = new SelectList(await _unitOfWork.MeasUnitRepository.Get(), "MeasUnitID", "ShortDescription");
+            ViewBag.ProductLineID = new SelectList(_unitOfWork.ProductLineRepository.Get(), "ProductLineID", "Name");
+            ViewBag.MeasUnitID = new SelectList(_unitOfWork.MeasUnitRepository.Get(), "MeasUnitID", "ShortDescription");
 
-            ViewBag.PartStatusID = new SelectList(await _unitOfWork.PartStatuRepository.Get(), "PartStatusID", "Status");
-            ViewBag.CostCurrencyID = new SelectList(await _unitOfWork.CurrencyRepository.Get(), "CurrencyID", "CurrencyName");
-            ViewBag.SellCurrencyID = new SelectList(await _unitOfWork.CurrencyRepository.Get(), "CurrencyID", "CurrencyName");
+            ViewBag.PartStatusID = new SelectList(_unitOfWork.PartStatuRepository.Get(), "PartStatusID", "Status");
+            ViewBag.CostCurrencyID = new SelectList(_unitOfWork.CurrencyRepository.Get(), "CurrencyID", "CurrencyName");
+            ViewBag.SellCurrencyID = new SelectList(_unitOfWork.CurrencyRepository.Get(), "CurrencyID", "CurrencyName");
         }
         #endregion
         #region Category GET
@@ -464,7 +464,7 @@ namespace Enterprise_Resource_planning.Controllers
                                     name = fileName1.Remove(fileName1.Length - 5);
                                 }
                                 _listFiles.Add(new FileTmp { ID = new Random().Next(), Name = name, Type = extension.Replace(".", ""), Contents = binData });
-                                ViewBag.DocumentTypeID = new SelectList(await _unitOfWork.DocumentTypeRepository.Get(), "DocumentTypeID", "Name");
+                                ViewBag.DocumentTypeID = new SelectList(_unitOfWork.DocumentTypeRepository.Get(), "DocumentTypeID", "Name");
                             }
                             else
                             {
@@ -528,7 +528,7 @@ namespace Enterprise_Resource_planning.Controllers
                 }
                 if (selectedfile != null)
                 {
-                   _listSelectedFiles.Remove(selectedfile);
+                    _listSelectedFiles.Remove(selectedfile);
                 }
                 return PartialView("Partial_Views/_FilesHome", _listFiles);
             }
@@ -554,7 +554,7 @@ namespace Enterprise_Resource_planning.Controllers
                 file.Type = filetmp.Type;
             }
 
-            ViewBag.DocumentTypeID = new SelectList(await _unitOfWork.DocumentTypeRepository.Get(), "DocumentTypeID", "Name", file?.DocumentTypeID);
+            ViewBag.DocumentTypeID = new SelectList(_unitOfWork.DocumentTypeRepository.Get(), "DocumentTypeID", "Name", file?.DocumentTypeID);
             return PartialView("Partial_Views/_FilesSaved", file);
         }
         // POST: File/Save
