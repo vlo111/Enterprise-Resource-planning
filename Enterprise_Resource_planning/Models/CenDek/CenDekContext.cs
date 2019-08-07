@@ -1,9 +1,5 @@
 ﻿using Enterprise_Resource_planning.Models.CenDek.Tables;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Web;
 
 namespace Enterprise_Resource_planning.Models.CenDek
 {
@@ -11,8 +7,9 @@ namespace Enterprise_Resource_planning.Models.CenDek
     {
         public CenDekContext() : base("name=CenDekProgram")
         {
-
+            Database.SetInitializer<CenDekContext>(null);
         }
+
         public virtual DbSet<AltPart> AltParts { get; set; }
         public virtual DbSet<Carrier> Carriers { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
