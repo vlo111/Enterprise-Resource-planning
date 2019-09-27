@@ -392,7 +392,7 @@ namespace Enterprise_Resource_planning.Controllers
                 //    return PartialView("PriceManagement/_Delete");
                 //}
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
             }

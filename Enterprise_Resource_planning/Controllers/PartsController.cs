@@ -23,9 +23,9 @@ namespace Enterprise_Resource_planning.Controllers
         #region Index Get and Post
 
         // GET: Parts
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
-            await InitVBAsync();
+            InitVB();
             var customer = (_unitOfWork.CustomerContactRepository.Get()).GroupBy(p => p.First).Select(p => new { name = p.Key }).ToList();
             ViewBag.CustomerID = new SelectList(customer, "name", "name");
 
@@ -93,7 +93,7 @@ namespace Enterprise_Resource_planning.Controllers
                                        System.Globalization.CultureInfo.InvariantCulture);
                     await _unitOfWork.PriceRepository.Create(price);
 
-                    await InitVBAsync();
+                    InitVB();
                     var customer = _unitOfWork.CustomerContactRepository.Get();
                     var cust = (from p in customer
                                 select new { id = p.CustomerID, name = p.First }).Distinct();
@@ -135,7 +135,7 @@ namespace Enterprise_Resource_planning.Controllers
         }
         #endregion
         #region Initialization ViewBag Tables for Index
-        public async Task InitVBAsync()
+        public void InitVB()
         {
             ViewBag.ProductLineID = new SelectList(_unitOfWork.ProductLineRepository.Get(), "ProductLineID", "Name");
             ViewBag.MeasUnitID = new SelectList(_unitOfWork.MeasUnitRepository.Get(), "MeasUnitID", "ShortDescription");
@@ -415,7 +415,7 @@ namespace Enterprise_Resource_planning.Controllers
         /// <summary>
         /// This method saves files for each click on the «File_ Dropzone»
         /// </summary>
-        public async Task<PartialViewResult> SelectedFilesView()
+        public PartialViewResult SelectedFilesView()
         {
             bool isSavedSuccessfully = true;
             string fName = "";
@@ -539,7 +539,7 @@ namespace Enterprise_Resource_planning.Controllers
         }
         // GET: SaveFile
         [HttpGet]
-        public async Task<ActionResult> SaveFile(int? id)
+        public ActionResult SaveFile(int? id)
         {
             if (id == null)
             {

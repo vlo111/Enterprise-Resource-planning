@@ -142,6 +142,33 @@
     </Compile>
     <Compile Include="Helpers\CacheManager.cs" />
     <Compile Include="Models\CenDek\CenDekContext.cs" />
+    <Compile Include="Models\CenDek\Mapping\AltPartMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\CategoryMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\CenDekConfigurations.cs" />
+    <Compile Include="Models\CenDek\Mapping\ColourMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\ContactInfoMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\ContactInfoTypeMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\CurrencyMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\CustomerContactMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\CustomerMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\CustOrderMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\DocumentTypeMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\EmployeeMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\FileMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\FileTmpMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\GroupUrgencyMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\ImageMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\MeasUnitMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\OrderPartMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\PartDependencyMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\PartInventoryMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\PartMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\PartStatuMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\PriceMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\ProductLineMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\ShipmentMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\ShippingAddressMap.cs" />
+    <Compile Include="Models\CenDek\Mapping\TagMap.cs" />
     <Compile Include="Models\CenDek\Tables\AltPart.cs" />
     <Compile Include="Models\CenDek\Tables\Carrier.cs" />
     <Compile Include="Models\CenDek\Tables\Category.cs" />
@@ -632,6 +659,13 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
+<Target Name="CopyRoslynFiles" AfterTargets="AfterBuild" Condition="!$(Disable_CopyWebApplication) And '$(OutDir)' != '$(OutputPath)'">
+    <ItemGroup>
+      <RoslynFiles Include="$(CscToolPath)\*" />
+    </ItemGroup>
+    <MakeDir Directories="$(WebProjectOutputDir)\bin\roslyn" />
+    <Copy SourceFiles="@(RoslynFiles)" DestinationFolder="$(WebProjectOutputDir)\bin\roslyn" SkipUnchangedFiles="true" Retries="$(CopyRetryCount)" RetryDelayMilliseconds="$(CopyRetryDelayMilliseconds)" />
+</Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
